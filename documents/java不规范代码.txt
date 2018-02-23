@@ -1,0 +1,60 @@
+一,避免在方法中出现多个return语句
+   错误：
+   private boolean isEligible(int age)
+   {
+		if(age > 18)
+		{
+			return true;
+		}else
+		{
+			return false;
+		}
+   }
+   
+   正确：
+   private boolean isEligible(int age)
+   {
+		boolean result;
+		if(age > 18)
+		{
+			result = true;
+		}else
+		{
+			result = false;
+		}
+		return result;
+   }
+   
+二,优化if-else语句
+   如上可优化为：
+   private boolean isEligible(int age)
+   {
+		return age > 18;
+   }
+   
+三,避免为Boolean,Ingteger或String创建新的实例
+   使用Boolean.valueOf(true)代替new Boolean(true)能够提高性能。
+
+四,在代码块周围使用大括号
+   不推荐
+   if(age > 18)
+		return true;
+	else
+		return false;
+	推荐
+	if(age > 18)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+	
+五,把方法的参数声明为final
+	总是在所有兼容的地方把方法参数声明为final，这样做的话，当无意中修改了参数的值，
+	编译时会报错，而且这样优化了字节码。
+	推荐
+	private boolean isEligible(final int age)
+	
+六,别忘记给switch语句添加default节点
