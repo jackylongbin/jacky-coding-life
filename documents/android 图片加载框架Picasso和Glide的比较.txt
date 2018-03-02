@@ -1,0 +1,59 @@
+导入库:
+	Picasso和Glide都在jcenter上。在项目中添加依赖非常简单：
+
+	Picasso
+
+		dependencies {
+			compile 'com.squareup.picasso:picasso:2.5.1'
+		}
+
+	Glide
+
+		dependencies {
+			compile 'com.github.bumptech.glide:glide:3.5.2'
+			compile 'com.android.support:support-v4:22.0.0'
+		}
+
+使用方法：
+
+	相似处
+
+		Glide和Picasso非常相似，Glide加载图片的方法和Picasso如出一辙。
+
+		Picasso
+
+			Picasso.with(context)
+				.load("http://inthecheesefactory.com/uploads/source/glidepicasso/cover.jpg")
+				.into(ivImg);
+
+		Glide
+
+			Glide.with(context)
+				.load("http://inthecheesefactory.com/uploads/source/glidepicasso/cover.jpg")
+				.into(ivImg);
+
+	不同处
+
+		虽然两者看起来一样，但是Glide更易用，因为Glide的with方法不光接受Context，还接受Activity 和 Fragment，
+		Context会自动的从他们获取。
+		
+	优缺点
+		同 时将Activity/Fragment作为with()参数的好处是：图片加载会和Activity/Fragment的生命周期保持一致，
+		比如在Paused状态暂停加载，在Resumed的时候又自动重新加载。所以我建议传参的时候传递Activity 和 Fragment给Glide，
+		而不是Context。
+默认Bitmap的格式
+	Picasso
+		ARGB_8888
+	Glide
+		RGB_565
+		
+磁盘缓存
+
+	Picasso和Glide在磁盘缓存策略上有很大的不同。Picasso缓存的是全尺寸的，而Glide缓存的是跟ImageView尺寸相同的。
+	优缺点
+	Glide加载非快，因为缓存与ImageView尺寸相同的图片加载时不需要处理图片；但是这样也比较耗内存因为图一张图片不同
+	尺寸的ImageView就需要缓存两张尺寸不同的图片。
+	
+Glide能做到，但是Picasso做不到的
+	1.Gif文件的加载
+	2.Glide还可以将任何的本地视频解码成一张静态图片
