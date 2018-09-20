@@ -1,0 +1,26 @@
+Uninstall And Remove Old Version
+Remove:
+1.sudo apt-get remove mysql-server
+2.sudo apt-get autoremove mysql-server
+3.udo apt-get remove mysql-common(very important)
+Clean;
+dpkg -l |grep ^rc|awk '{print $2}' |sudo xargs dpkg -P
+sudo find /etc -name "*mysql*" |xargs  rm -rf
+Check if all clean:
+dpkg -l | grep mysql(If return null then already clean)
+
+Install MySQL 5.7.23 Offline
+Download:
+1.download deb file from official website
+https://dev.mysql.com/downloads/mysql/
+
+Install:
+Copy:
+1.Copy the downloaded tar file to your server;
+Uncompress:
+2.sudo tar -xf mysql-server_5.7.23-1ubuntu14.04_amd64.deb-bundle.tar
+Install:
+dpkg -i mysql-common_5.7.23-1ubuntu14.04_amd64.deb libmysqlclient20_5.7.23-1ubuntu14.04_amd64.deb libmysqlclient-dev_5.7.23-1ubuntu14.04_amd64.deb libmysqld-dev_5.7.23-1ubuntu14.04_amd64.deb mysql-community-client_5.7.23-1ubuntu14.04_amd64.deb mysql-client_5.7.23-1ubuntu14.04_amd64.deb mysql-community-server_5.7.23-1ubuntu14.04_amd64.deb
+
+3.As the order above if there need other dependence package just "sudo apt-get install XXX"
+4.If there need to input the root count password,just ensure you have correct do it,you can use "tab" key to jump to the "OK" button.
