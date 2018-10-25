@@ -1,0 +1,138 @@
+SpringMVC 配置Controller异步返回
+
+配置需求：
+Servlet version: >=3.0
+Spring version:  >=3.2
+Tomcat version:  >=7.0
+
+web.xml配置：
+所有的servlet和filter必须添加async支持，例如；
+	<filter>  
+        <filter-name>characterEncodingFilter</filter-name>  
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class> 
+		<!-- Add async support for filter-->
+        <async-supported>true</async-supported>
+        <init-param>  
+            <param-name>encoding</param-name>  
+            <param-value>UTF-8</param-value>  
+        </init-param>  
+        <init-param>  
+            <param-name>forceEncoding</param-name>  
+            <param-value>true</param-value>  
+        </init-param>  
+    </filter>  
+    <filter-mapping>  
+        <filter-name>characterEncodingFilter</filter-name>  
+        <url-pattern>*.do</url-pattern>  
+    </filter-mapping> 
+    
+    <!-- springmvc config file-->
+	<servlet>
+		<servlet-name>springMVC</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath:springmvc-servlet.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+		<!-- Add async support for servlet-->
+		<async-supported>true</async-supported>
+	</servlet>
+
+	<session-config>
+	   <session-timeout>30</session-timeout>
+	</session-config>
+
+	<servlet-mapping>
+		<servlet-name>springMVC</servlet-name>
+		<url-pattern>*.do</url-pattern>
+	</servlet-mapping>
+
+	
+springmvc-servlet.xml 配置：
+必须引入mvc 申明，否则无法实现功能。
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+     http://www.springframework.org/schema/context 
+     http://www.springframework.org/schema/context/spring-context-3.2.xsd
+     http://www.springframework.org/schema/beans 
+     http://www.springframework.org/schema/beans/spring-beans.xsd
+     http://www.springframework.org/schema/jdbc 
+     http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+     http://www.springframework.org/schema/aop 
+     http://www.springframework.org/schema/aop/spring-aop.xsd
+     http://www.springframework.org/schema/mvc
+     http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+     http://www.springframework.org/schema/tx
+     http://www.springframework.org/schema/tx/spring-tx.xsd">
+	 
+	.......
+	<mvc:annotation-driven>
+	<!--  可不设置，使用默认的超时时间 -->
+		<mvc:async-support default-timeout="3000"/>
+	</mvc:annotation-driven>
+	.......
+</beans>
+
+
+pom.xml配置：
+
+	<properties>
+        <spring-version>4.3.9.RELEASE</spring-version>  
+  		<javax.servlet-version>3.0.1</javax.servlet-version>
+	</properties>
+
+	dependency>
+		<groupId>javax.servlet</groupId>
+		<artifactId>javax.servlet-api</artifactId>
+		<version>${javax.servlet-version}</version>
+		<scope>provided</scope>
+	</dependency>
+	
+Controller 配置：
+
+@Controller
+@RequestMapping(value="async")
+public class AsyncController {
+	//Cache Deferred Object
+	public Map<String, Object> deferredMap = new HashMap<>();
+	
+	//Async method 1
+	@RequestMapping(method = RequestMethod.GET, value = "/deferred.do")
+	public @ResponseBody DeferredResult<String> deferred() {
+	    DeferredResult<String> deferredResult = new DeferredResult<String>();
+	    // Save the deferredResult somewhere..
+	    deferredMap.put("test", deferredResult);
+	    return deferredResult;
+	}
+	
+	//Async method2
+	@RequestMapping(method = RequestMethod.GET, value = "/callable.do")
+	public @ResponseBody Callable<String> callable(){
+	    return new Callable<String>() {
+	    	@Override
+	        public String call() throws Exception {
+	            Thread.sleep(10000);
+	            return "callable return";
+	        }
+	    };
+	}
+	
+	//Triggle deferred return,may by other way like receive message from message queue
+	@RequestMapping(method = RequestMethod.GET, value = "/trigger.do")
+	public @ResponseBody String trigger() {
+		if(deferredMap.containsKey("test"))
+		{
+			((DeferredResult<String>)deferredMap.get("test")).setResult("deferred return");
+		}
+		return "trigger";
+	}
+}
+
+	 
