@@ -1,0 +1,108 @@
+user.name jacky
+user.email 1165002248@qq.com
+
+
+git相关指令
+
+//查看用户名
+git config user.name
+
+//查看邮箱地址
+git config user.email
+
+//修改用户名
+git config --global user.name 'username'
+
+//修改邮箱
+git config --global user.email 'email'
+
+
+//初始化仓库
+git init
+
+//查看仓库文件状态
+git status
+
+//添加文件到暂缓区
+git add <file>
+
+//带注释提交文件
+git commit -m '注释'
+
+//查看历史记录
+git log
+
+//将历史记录显示在一行
+git log --pretty=oneline
+
+//查看所有历史记录
+git reflog
+
+//回退到上一个版本
+git reset --hard HEAD^
+
+//回退到上两个版本
+git reset --hard HEAD^^
+
+//查看文件内容
+cat <file>
+
+//回退到指定版本
+git reset --hard <版本号>
+
+//撤销修改 未提交之前 将工作区的修改全部撤销 将未添加到缓存区的内容撤销掉
+git checkout -- <file>
+
+//删除文件，在commit前可用git checkout -- <file>恢复
+rm b.txt
+
+
+/****远程仓库操作****/
+/*远程仓库和本地仓库之间通过SSH加密传输数据*/
+
+//1.创建SSH Key
+ssh-keygen  -t rsa –C “youremail@example.com”
+
+//2.将本地仓库与远程仓库关联
+git remote add origin https://github.com/tugenhua0707/testgit.git(your url)
+
+//3.将本地分支master推送到远程并关联远程master
+//第一次推送用-u参数关联远程master
+git push -u origin master
+
+//从远程仓库克隆
+git clone <url>
+
+//创建并切换分支
+git checkout -b <branch>
+
+//创建分支
+git branch <分支名>
+
+//切换分支
+git checkout <分支名>
+
+//删除分支
+git branch -d <分支名>
+
+//查看当前分支
+git branch
+
+//合并其他分支的内容
+git merge <分支名>
+
+
+//隐藏当前工作现场
+git stash
+
+//显示现场列表
+git stash list
+
+//恢复现场
+git stash apply
+
+//删除现场
+git stash drop
+
+//恢复并删除现场
+git stash pop
