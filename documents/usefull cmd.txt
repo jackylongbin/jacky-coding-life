@@ -1,0 +1,10 @@
+pscp 上传文件命令：
+
+pscp f:\Relase\Xp02UdpServer-V1.0.1.jar root@120.78.224.26:/root/Xp02UdpServer
+
+linux后台运行命令：
+nohup java -jar Xp02UdpServer-V1.0.1.jar > log.txt&
+
+
+android maven仓库：
+maven{url'http://maven.aliyun.com/nexus/content/groups/public/'}
